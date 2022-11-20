@@ -8,15 +8,6 @@ class Temas(models.Model):
     descripcion = models.TextField()
     def __str__(self):
         return "Tema: "+self.nombre + "; Descripción " + self.descripcion
-
-class Permiso(models.Model):
-    #Esta clase representa a los permisos que se pueden obtener en la autoescuela
-    id_Permiso = models.AutoField(primary_key=True)
-    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-    id_Permiso_Usuario = models.ForeignKey(Pregunta, on_delete=models.CASCADE)
-    descripcion = models.TextField()
-    def __str__(self):
-        return self.nombre
  
 class Pregunta(models.Model):
     #Esta clase representa a las preguntas de que generan los exámenes
@@ -38,6 +29,15 @@ class Usuario(models.Model):
     fecha_nacimiento = models.DateField()
     direccion = models.CharField(max_length=100)
     telefono = models.CharField(max_length=9)
+    def __str__(self):
+        return self.nombre
+
+class Permiso(models.Model):
+    #Esta clase representa a los permisos que se pueden obtener en la autoescuela
+    id_Permiso = models.AutoField(primary_key=True)
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    id_Permiso_Usuario = models.ForeignKey(Pregunta, on_delete=models.CASCADE)
+    descripcion = models.TextField()
     def __str__(self):
         return self.nombre
 
