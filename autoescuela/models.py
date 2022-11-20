@@ -19,7 +19,7 @@ class Pregunta(models.Model):
     respuesta_Correcta = models.TextField()
     imagen_pregunta = models.ImageField(upload_to='preguntas', null=True, blank=True)
     def __str__(self):
-        return self.nombre
+        return "Pregunta: "+self.pregunta + "; Respuesta Correcta " + self.respuesta_Correcta
     
 class Usuario(models.Model):
     #Esta clase representa a los usuarios de la autoescuela
@@ -30,7 +30,7 @@ class Usuario(models.Model):
     direccion = models.CharField(max_length=100)
     telefono = models.CharField(max_length=9)
     def __str__(self):
-        return self.nombre
+        return "DNI: "+self.dni + "; Nombre " + self.nombre + " " + self.apellidos+"; Fecha de nacimiento: "+self.fecha_nacimiento+"; Dirección: "+self.direccion+"; Teléfono: "+self.telefono
 
 class Permiso(models.Model):
     #Esta clase representa a los permisos que se pueden obtener en la autoescuela
@@ -39,17 +39,17 @@ class Permiso(models.Model):
     id_Permiso_Usuario = models.ForeignKey(Pregunta, on_delete=models.CASCADE)
     descripcion = models.TextField()
     def __str__(self):
-        return self.nombre
+        return "Permiso: "+self.descripcion+
 
-class usuario_permiso(models.Model):
-    #Esta clase representa los permisos de los usuarios
-    id_permiso = models.AutoField(primary_key=True)
-    fecha_matricula = models.DateField()
-    fecha_salida = models.DateField()
-    dni = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+class matricula(models.Model):
+    #Esta clase representa a las matriculas de los usuarios
+    id_Matricula = models.AutoField(primary_key=True)
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     permiso = models.ForeignKey(Permiso, on_delete=models.CASCADE)
+    fecha_Matricula = models.DateField()
+    fecha_salida = models.DateField()
     def __str__(self):
-        return "Permiso: "+self.id_Tema + "; Fecha expedición " + self.fecha_expedicion + "; Fecha caducidad " + self.fecha_caducidad
+        return self.nombre
     
 class Examen (models.Model):
     #Esta clase representa a los exámenes que se realizan en la autoescuela
