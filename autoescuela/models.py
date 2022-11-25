@@ -40,11 +40,12 @@ class Usuario(models.Model):
     nombre = models.CharField(max_length=100)  #Nombre del usuario
     apellidos = models.CharField(max_length=100) 
     fecha_nacimiento = models.DateField()
+    imagen_usuario = models.ImageField(upload_to='usuarios', null=True, blank=True) #Campo para subir imágenes de los usuarios
     direccion = models.CharField(max_length=100) #Dirección del usuario
     telefono = models.CharField(max_length=9) #Teléfono del usuario
     email= models.EmailField()  #Email del usuario
     fecha_matriculacion = models.DateField(null=False) #Fecha de matriculación del usuario
-    fecha_salida = models.DateField(default=None, null=True, blank=True) #Fecha de salida del usuario, es decir cuando el usuari apruebe el examen
+    fecha_baja = models.DateField(default=None, null=True, blank=True) #Fecha de salida del usuario, es decir cuando el usuari apruebe el examen
     def __str__(self):
         return "DNI: "+self.dni + "; Nombre " + self.nombre + " " + self.apellidos+"; Fecha de nacimiento: "+str(self.fecha_nacimiento)+"; Dirección: "+self.direccion+"; Teléfono: "+self.telefono
     
@@ -57,6 +58,8 @@ class Examen (models.Model):
         return "Examen: "+self.nombre_Examen+"; Preguntas: "+"".join(str(seg) for seg in self.preguntas.all())
     def get_absolute_url(self):
         return reverse(self.nombre_Examen, args=[str(self.id_Examen)])
+    def display_preguntas(self):
+        return ', '.join(pregunta.pregunta for pregunta in self.preguntas.all())
     
     
 class Examen_Usuario (models.Model):
@@ -64,10 +67,11 @@ class Examen_Usuario (models.Model):
     id_Examen_Usuario = models.AutoField(primary_key=True)
     examen = models.ForeignKey(Examen, on_delete=models.CASCADE) #Relación con la clase Examen (Muchos a uno)
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE) #Relación con la clase Usuario (Muchos a uno)
-    respuestas_Usuario = ArrayField(models.TextField()) #Array con las respuestas del usuario
-    preguntas_falladas = models.ManyToManyField(Pregunta)#Array con las preguntas falladas por el usuario 
+    respuestas_Usuario = ArrayField(models.TextField(), blank=True, default=None) #Array con las respuestas del usuario
+    id_preguntas_falladas = ArrayField(models.TextField(), blank=True, default=None, null=True)  #Array con las preguntas falladas por el usuario
     aprobado = models.BooleanField(default=False) #Booleano que indica si el usuario ha aprobado el examen o no
-    fecha = models.DateField(auto_now_add=True) #Fecha en la que se realiza el examen
+    fecha = models.DateField(null=False) #Fecha en la que se realiza el examen
+        
     def __str__(self):
         return "Examen: "+self.examen+"; Usuario: "+self.usuario+"; Respuestas del usuario: "+self.respuestas_Usuario+"; Preguntas falladas: "+self.preguntas_falladas+"; Aprobado: "+self.aprobado+"; Fecha: "+self.fecha
     def get_absolute_url(self):
