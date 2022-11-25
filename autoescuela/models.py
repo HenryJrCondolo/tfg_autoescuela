@@ -1,76 +1,77 @@
 from django.db import models
+from django.contrib.postgres.fields import ArrayField
+from django.urls import reverse #Used to generate URLs by reversing the URL patterns
 
 # Create your models here.
-class Temas(models.Model):
+class Tema(models.Model):
     #Esta clase representa los temas de la autoescuela
-    id_Tema = models.AutoField(primary_key=True);
-    tema = models.CharField(max_length=100)
-    descripcion = models.TextField()
+    id_Tema =  models.AutoField(primary_key=True) #Identificador del tema
+    tema = models.CharField(max_length=100) #Nombre del tema
+    descripcion = models.TextField() #Descripción del tema
     def __str__(self):
-        return "Tema: "+self.nombre + "; Descripción " + self.descripcion
- 
+        return "Tema: "+self.tema+"; Descripción: "+self.descripcion
+    
+class Permiso(models.Model):
+    #Esta clase representa a los permisos que se pueden obtener en la autoescuela
+    tipo_licencia = models.CharField(primary_key=True, max_length=11, unique=True) #Tipo de licencia A, B, C, D 
+    descripcion = models.TextField() #Descripción del permiso
+    precio = models.FloatField(null=True, blank=True, default=0.0) #Precio del permiso
+    def __str__(self):
+        return "Permiso: "+self.tipo_licencia+"; precio: "+str(self.precio)+"; Descripción: "+self.descripcion
+     
 class Pregunta(models.Model):
     #Esta clase representa a las preguntas de que generan los exámenes
     id_Pregunta = models.AutoField(primary_key=True);
-    tema = models.ForeignKey(Temas, on_delete=models.CASCADE)
+    tema = models.ForeignKey(Tema, on_delete=models.CASCADE) #Relación con la clase Tema (Muchos a uno)
+    permiso = models.ForeignKey(Permiso, on_delete=models.CASCADE) #Relación con la clase Permiso (Muchos a uno)
     pregunta = models.TextField()
     respuesta_Falsa_1 = models.TextField()
     respuesta_Falsa_2 = models.TextField()
     respuesta_Correcta = models.TextField()
-    imagen_pregunta = models.ImageField(upload_to='preguntas', null=True, blank=True)
+    imagen_pregunta = models.ImageField(upload_to='preguntas', null=True, blank=True) #Campo para subir imágenes de las preguntas
+    descripcion_adicional = models.TextField(null=True, blank=True) #Campo para añadir descripciones adicionales a la respuesta correcta
     def __str__(self):
-        return "Pregunta: "+self.pregunta + "; Respuesta Correcta " + self.respuesta_Correcta
+        return "Pregunta: "+self.pregunta+"; Tema: "+ self.tema.tema+ "; Permiso: "+self.permiso.tipo_licencia + "; Respuesta Correcta: " + self.respuesta_Correcta+"; Respuesta Falsa 1: "+self.respuesta_Falsa_1+"; Respuesta Falsa 2: "+self.respuesta_Falsa_2+"; Descripción adicional: "+self.descripcion_adicional
     
 class Usuario(models.Model):
     #Esta clase representa a los usuarios de la autoescuela
-    dni = models.CharField(max_length=9, primary_key=True)
-    nombre = models.CharField(max_length=100)
-    apellidos = models.CharField(max_length=100)
+    dni = models.CharField(primary_key=True, max_length=11, unique=True) #DNI del usuario
+    permiso = models.ForeignKey(Permiso, on_delete=models.CASCADE, null=False) #Relación con la clase Permiso (Muchos a uno)
+    nombre = models.CharField(max_length=100)  #Nombre del usuario
+    apellidos = models.CharField(max_length=100) 
     fecha_nacimiento = models.DateField()
-    direccion = models.CharField(max_length=100)
-    telefono = models.CharField(max_length=9)
+    direccion = models.CharField(max_length=100) #Dirección del usuario
+    telefono = models.CharField(max_length=9) #Teléfono del usuario
+    email= models.EmailField()  #Email del usuario
+    fecha_matriculacion = models.DateField(null=False) #Fecha de matriculación del usuario
+    fecha_salida = models.DateField(default=None, null=True, blank=True) #Fecha de salida del usuario, es decir cuando el usuari apruebe el examen
     def __str__(self):
-        return "DNI: "+self.dni + "; Nombre " + self.nombre + " " + self.apellidos+"; Fecha de nacimiento: "+self.fecha_nacimiento+"; Dirección: "+self.direccion+"; Teléfono: "+self.telefono
-
-class Permiso(models.Model):
-    #Esta clase representa a los permisos que se pueden obtener en la autoescuela
-    id_Permiso = models.AutoField(primary_key=True)
-    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-    id_Permiso_Usuario = models.ForeignKey(Pregunta, on_delete=models.CASCADE)
-    descripcion = models.TextField()
-    def __str__(self):
-        return "Permiso: "+self.descripcion+
-
-class matricula(models.Model):
-    #Esta clase representa a las matriculas de los usuarios
-    id_Matricula = models.AutoField(primary_key=True)
-    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-    permiso = models.ForeignKey(Permiso, on_delete=models.CASCADE)
-    fecha_Matricula = models.DateField()
-    fecha_salida = models.DateField()
-    def __str__(self):
-        return self.nombre
+        return "DNI: "+self.dni + "; Nombre " + self.nombre + " " + self.apellidos+"; Fecha de nacimiento: "+str(self.fecha_nacimiento)+"; Dirección: "+self.direccion+"; Teléfono: "+self.telefono
     
 class Examen (models.Model):
     #Esta clase representa a los exámenes que se realizan en la autoescuela
-    id_Examen = models.AutoField(primary_key=True)
-    nombre_Examen = models.CharField(max_length=100)
-    preguntas = models.ManyToManyField(Pregunta)
+    id_Examen = models.AutoField(primary_key=True) 
+    nombre_Examen = models.CharField(max_length=100) #Nombre del examen
+    preguntas = models.ManyToManyField(Pregunta) #Relación con la clase Pregunta (Muchos a muchos)
     def __str__(self):
-        return self.nombre
+        return "Examen: "+self.nombre_Examen+"; Preguntas: "+"".join(str(seg) for seg in self.preguntas.all())
+    def get_absolute_url(self):
+        return reverse(self.nombre_Examen, args=[str(self.id_Examen)])
+    
     
 class Examen_Usuario (models.Model):
     #Esta clase representa a los exámenes realizados por los usuarios en la autoescuela
     id_Examen_Usuario = models.AutoField(primary_key=True)
-    examen = models.ForeignKey(Examen, on_delete=models.CASCADE)
-    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-    respuestas_Usuario = models.ArrayField(models.TextField())
-    preguntas_falladas = models.ArrayField(models.ForeignKey(Pregunta, on_delete=models.CASCADE));
-    aprobado = models.BooleanField(default=False)
-    fecha = models.DateField(auto_now_add=True)
+    examen = models.ForeignKey(Examen, on_delete=models.CASCADE) #Relación con la clase Examen (Muchos a uno)
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE) #Relación con la clase Usuario (Muchos a uno)
+    respuestas_Usuario = ArrayField(models.TextField()) #Array con las respuestas del usuario
+    preguntas_falladas = models.ManyToManyField(Pregunta)#Array con las preguntas falladas por el usuario 
+    aprobado = models.BooleanField(default=False) #Booleano que indica si el usuario ha aprobado el examen o no
+    fecha = models.DateField(auto_now_add=True) #Fecha en la que se realiza el examen
     def __str__(self):
-        return self.nombre
-
+        return "Examen: "+self.examen+"; Usuario: "+self.usuario+"; Respuestas del usuario: "+self.respuestas_Usuario+"; Preguntas falladas: "+self.preguntas_falladas+"; Aprobado: "+self.aprobado+"; Fecha: "+self.fecha
+    def get_absolute_url(self):
+        return reverse("model_detail", kwargs={"pk": self.pk})
 
 
 
