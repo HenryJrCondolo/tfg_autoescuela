@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.postgres.fields import ArrayField
 from django.urls import reverse #Used to generate URLs by reversing the URL patterns
 
+   
+
 # Create your models here.
 class Tema(models.Model):
     #Esta clase representa los temas de la autoescuela
@@ -26,9 +28,9 @@ class Pregunta(models.Model):
     permiso = models.ForeignKey(Permiso, on_delete=models.CASCADE) #Relación con la clase Permiso (Muchos a uno)
     pregunta = models.TextField()
     respuesta_Falsa_1 = models.TextField()
-    respuesta_Falsa_2 = models.TextField()
+    respuesta_Falsa_2 = models.TextField(null=True, blank=True)
     respuesta_Correcta = models.TextField()
-    imagen_pregunta = models.ImageField(upload_to='preguntas', null=True, blank=True) #Campo para subir imágenes de las preguntas
+    imagen_pregunta = models.ImageField(upload_to='imagenes_preguntas', null=True, blank=True) #Campo para subir imágenes de las preguntas
     descripcion_adicional = models.TextField(null=True, blank=True) #Campo para añadir descripciones adicionales a la respuesta correcta
     def __str__(self):
         return "Pregunta: "+self.pregunta+"; Tema: "+ self.tema.tema+ "; Permiso: "+self.permiso.tipo_licencia + "; Respuesta Correcta: " + self.respuesta_Correcta+"; Respuesta Falsa 1: "+self.respuesta_Falsa_1+"; Respuesta Falsa 2: "+self.respuesta_Falsa_2+"; Descripción adicional: "+self.descripcion_adicional
@@ -40,7 +42,7 @@ class Usuario(models.Model):
     nombre = models.CharField(max_length=100)  #Nombre del usuario
     apellidos = models.CharField(max_length=100) 
     fecha_nacimiento = models.DateField()
-    imagen_usuario = models.ImageField(upload_to='usuarios', null=True, blank=True) #Campo para subir imágenes de los usuarios
+    imagen_usuario = models.ImageField(upload_to='imagenes_usuarios', null=True, blank=True) #Campo para subir imágenes de los usuarios
     direccion = models.CharField(max_length=100) #Dirección del usuario
     telefono = models.CharField(max_length=9) #Teléfono del usuario
     email= models.EmailField()  #Email del usuario
@@ -72,11 +74,10 @@ class Examen_Usuario (models.Model):
     aprobado = models.BooleanField(default=False) #Booleano que indica si el usuario ha aprobado el examen o no
     fecha = models.DateField(null=False) #Fecha en la que se realiza el examen
         
-    def __str__(self):
+    def __str__(self): #Método que devuelve el nombre del examen y el nombre del usuario
         return "Examen: "+self.examen+"; Usuario: "+self.usuario+"; Respuestas del usuario: "+self.respuestas_Usuario+"; Preguntas falladas: "+self.preguntas_falladas+"; Aprobado: "+self.aprobado+"; Fecha: "+self.fecha
     def get_absolute_url(self):
         return reverse("model_detail", kwargs={"pk": self.pk})
-
 
 
 
