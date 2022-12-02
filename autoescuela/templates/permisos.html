@@ -1,0 +1,12 @@
+{% extends "base_generic.html" %}
+{% block content %}
+{% if permiso_list %}
+<ul>
+  {% for permiso in permiso_list %}
+  <li>{{ permiso.tipo_licencia }}</li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>No ha cargado los permisos</p>
+{% endif %}
+{% endblock %}
