@@ -2,57 +2,78 @@
 {% block content %}
 <!-------------Start Carrusel-------------->
 
-<div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="true">
+<div id="carouselExampleDark" class="carousel carousel-dark slide" data-bs-ride="carousel">
   <div class="carousel-indicators">
-    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
-    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
+    <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="0" class="active"
+      aria-current="true" aria-label="Slide 1"></button>
+    <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="1" aria-label="Slide 2"></button>
+    <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="2" aria-label="Slide 3"></button>
   </div>
   <div class="carousel-inner">
-    <div class="carousel-item active">
-      <img src="/media/Captura desde 2022-11-30 03-11-30.png" id="sepia" class="d-block w-100" alt="..." width="620px" height="450px">
-      <div class="carousel-caption d-none d-sm-block">
-        <h5>First slide label</h5>
-        <p>Some representative placeholder content for the first slide.</p>
+    <div class="carousel-item">
+      <div class="row " style="margin-top: 50px;">
+        <div class="col" >
+          <img src="/media/carrusel/carrusel1.png" class="float-end"  id="imagenesCarrusel" alt="...">
+        </div>
+        <div class="col" id="textoCarrusel">
+          <div >
+            <h5>ABURRIDO EN CASA, PREPARA TU TEÓRICO CON NUESTRO MÉTODO 100% ONLINE</h5>
+            <p>En Autoescuelas San Nicolás hemos adaptado nuestras clases para que puedas seguirlas desde casa.</p>
+            <a href="{% url 'permisos' %}" class="btn btn-primary">Comenzar</a>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="carousel-item">
-      <img src="/media/Captura desde 2022-11-30 03-11-39.png" class="d-block w-100 " alt="..." width="620px" height="450px">
-      <div class="carousel-caption d-none d-sm-block" >
-        <h5>Second slide label</h5>
-        <p>Some representative placeholder content for the second slide.</p>
+  <div class="carousel-item active">
+    <div class="row " style="margin-top: 50px;">
+      <div class="col">
+        <img src="/media/carrusel/carrusel2.png" class= "float-end"  id="imagenesCarrusel" alt="...">
       </div>
-    </div>
-    <div class="carousel-item">
-      <img src="/media/Captura desde 2022-11-30 03-11-46.png" id="sepia" class="d-block w-100" alt="..." width="620px" height="450px">
-      <div class="carousel-caption d-none d-sm-block">
-        <h5 id="sombra">Third slide label</h5>
-        <p>Some representative placeholder content for the third slide.</p>
+      <div class="col" id="textoCarrusel">
+        <div>
+          <h5>First slide label</h5>
+          <p>Some representative placeholder content for the first slide.</p>
+        </div>
       </div>
     </div>
   </div>
-  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
-    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Previous</span>
-  </button>
-  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
-    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Next</span>
-  </button>
+  <div class="carousel-item">
+    <div class="row " style="margin-top: 50px;">
+      <div class="col">
+        <img src="/media/carrusel/carrusel3.png" class=" float-end"  id="imagenesCarrusel" alt="...">
+      </div>
+      <div class="col" id="textoCarrusel">
+        <div>
+          <h5>First slide label</h5>
+          <p>Some representative placeholder content for the first slide.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="prev">
+  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+  <span class="visually-hidden">Previous</span>
+</button>
+<button class="carousel-control-next" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="next">
+  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+  <span class="visually-hidden">Next</span>
+</button>
 </div>
 
 <!----------------End Carrusel---------->
 
-<!----------------Start Cards----------->
+<!----------------Start Cards------------>
 
-<div class="container-fluid row row-cols-1 row-cols-md-4 g-6" >
+<div class="container-fluid row row-cols-1 row-cols-md-4 g-6">
   <div class="col">
     <div class="card">
-      <img src="/media/imagenes_cards/coche_card.png" width="420px" height="250px" class="card-img-top" alt="...">
+      <img src="/media/imagenes_cards/coche.png" class="container" alt="...">
       <div class="card-body">
         <h5 class="card-title">Permiso B</h5>
         <p class="card-text">
-          Es el carnet de conducir que todos estamos deseando obtener nada más cumplir los 18 años, algunos incluso antes.
+          Es el carnet de conducir que todos estamos deseando obtener nada más cumplir los 18 años, algunos incluso
+          antes.
           Como dice algún anuncio ¿te gusta conducir?, nosotros estamos convencidos que sí y estás deseando confirmarlo.
           Nosotros te ayudarmos a averiguarlo, sigue leyendo.
         </p>
@@ -61,31 +82,34 @@
   </div>
   <div class="col">
     <div class="card">
-      <img src="/media/imagenes_cards/moto_card.png" width="420px" height="250px" class="card-img-top" alt="...">
+      <img src="/media/imagenes_cards/moto.png" class="container"  alt="...">
       <div class="card-body">
         <h5 class="card-title">Permiso A</h5>
         <p class="card-text">
-          Se pueden conducir CICLOMOTORES de todo tipo, para hacerlo con pasajero se deben tener 18 años. 
-          Su obtención exige DOS PRUEBAS DE EXAMEN, una teórica específica de 20 preguntas, otra en circuito cerrado al tráfico en la que se demostrará el dominio y habilidad con el vehículo.
+          Se pueden conducir CICLOMOTORES de todo tipo, para hacerlo con pasajero se deben tener 18 años.
+          Su obtención exige DOS PRUEBAS DE EXAMEN, una teórica específica de 20 preguntas, otra en circuito cerrado al
+          tráfico en la que se demostrará el dominio y habilidad con el vehículo.
         </p>
       </div>
     </div>
   </div>
   <div class="col">
     <div class="card">
-      <img src="/media/Captura desde 2022-11-30 03-12-05.png" width="420px" height="250px" class="card-img-top" alt="...">
+      <img src="/media/imagenes_cards/camion.png" class="container"  alt="...">
       <div class="card-body">
         <h5 class="card-title">Card title</h5>
-        <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content.</p>
+        <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional
+          content.</p>
       </div>
     </div>
   </div>
   <div class="col">
     <div class="card">
-      <img src="/media/Captura desde 2022-11-30 03-12-05.png" width="420px" height="250px" class="card-img-top" alt="...">
+      <img src="/media/imagenes_cards/autobus.png" class="container"  alt="...">
       <div class="card-body">
         <h5 class="card-title">Card title</h5>
-        <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+        <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional
+          content. This content is a little bit longer.</p>
       </div>
     </div>
   </div>
