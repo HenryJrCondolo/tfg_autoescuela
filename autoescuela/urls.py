@@ -8,4 +8,4 @@ urlpatterns = [
     url(r'^examenes/$', views.ExamenesListView.as_view(), name='examen'),
     url(r'^permisos/$', views.PermisosListView.as_view(), name='permisos'),
 ]
-urlpatterns += [path('accounts/', include('django.contrib.auth.urls'))]
+
