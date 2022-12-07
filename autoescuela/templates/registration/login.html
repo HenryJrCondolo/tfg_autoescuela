@@ -1,6 +1,6 @@
 {% extends "base_generic.html" %} {% block content %}
 
-<div class="loginform" style="width: 500px; height: 525px">
+<div class="loginform" id="login-form" style="width: 500px; height: 525px">
   <form method="post" action="{% url 'login' %}" style="margin: 0px auto">
     <div>
       {% csrf_token %}
@@ -20,7 +20,7 @@
         <a class="forminput">{{ form.password }}</a>
       </div>
       <div>
-        <input type="submit" class="btn btn-primary" value="Inicar sesión" />
+        <input type="submit" class="btn btn-primary" value="login" />
         <input type="hidden" name="next" value="{{ next }}" />
       </div>
       {# Assumes you setup the password_reset view in your URLconf #}

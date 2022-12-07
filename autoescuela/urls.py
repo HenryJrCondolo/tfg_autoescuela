@@ -3,9 +3,10 @@ from django.views.generic import RedirectView
 from . import views
 from django.urls import include, path
 
+
 urlpatterns = [
     url(r'^$', views.index, name='index'),
-    url(r'^examenes/$', views.ExamenesListView.as_view(), name='examen'),
     url(r'^permisos/$', views.PermisosListView.as_view(), name='permisos'),
+    url(r'^aula_virtual/$', views.IndexExamenListView.as_view(), name='aula_virtual'),
 ]
 

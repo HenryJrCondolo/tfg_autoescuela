@@ -1,7 +1,9 @@
+from django.utils import timezone
+import random
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
 from django.urls import reverse #Used to generate URLs by reversing the URL patterns
-
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
    
 
 # Create your models here.
@@ -34,34 +36,95 @@ class Pregunta(models.Model):
     descripcion_adicional = models.TextField(null=True, blank=True) #Campo para añadir descripciones adicionales a la respuesta correcta
     def __str__(self):
         return "Pregunta: "+self.pregunta+"; Tema: "+ self.tema.tema+ "; Permiso: "+self.permiso.tipo_licencia + "; Respuesta Correcta: " + self.respuesta_Correcta+"; Respuesta Falsa 1: "+self.respuesta_Falsa_1+"; Respuesta Falsa 2: "+self.respuesta_Falsa_2+"; Descripción adicional: "+self.descripcion_adicional
+    def ordenar_respuestas(self):
+        lista_respuestas = [self.respuesta_Correcta, self.respuesta_Falsa_1, self.respuesta_Falsa_2]
+        random.shuffle(lista_respuestas)
+        return lista_respuestas
     
-class Usuario(models.Model):
+    
+   
+class UsuarioManager(BaseUserManager):
+    def create_user(self, dni, nombre, apellidos, fecha_nacimiento, telefono, email, password=None):
+        if not dni:
+            raise ValueError('Los usuarios deben tener un DNI')
+        user = self.model(
+            dni=dni,
+            nombre=nombre,
+            apellidos=apellidos,
+            fecha_nacimiento=fecha_nacimiento,
+            telefono=telefono,
+            email=self.normalize_email(email),
+        )
+        user.set_password(password)
+        user.save()
+        return user
+    def create_superuser(self, dni, nombre, apellidos, fecha_nacimiento, telefono, email, password):
+        user = self.create_user(
+            dni=dni,
+            nombre=nombre,
+            apellidos=apellidos,
+            fecha_nacimiento=fecha_nacimiento,
+            email=self.normalize_email(email),
+            telefono=telefono,
+            password=password,
+        )
+        user.is_administador = True
+        user.save()
+        return user
+    
+class Usuario(AbstractBaseUser, PermissionsMixin):
     #Esta clase representa a los usuarios de la autoescuela
     dni = models.CharField(primary_key=True, max_length=11, unique=True) #DNI del usuario
-    permiso = models.ForeignKey(Permiso, on_delete=models.CASCADE, null=False) #Relación con la clase Permiso (Muchos a uno)
+    permiso = models.ForeignKey(Permiso, on_delete=models.CASCADE, null=True) #Relación con la clase Permiso (Muchos a uno)
     nombre = models.CharField(max_length=100)  #Nombre del usuario
     apellidos = models.CharField(max_length=100) 
     fecha_nacimiento = models.DateField()
     imagen_usuario = models.ImageField(upload_to='imagenes_usuarios', null=True, blank=True) #Campo para subir imágenes de los usuarios
     direccion = models.CharField(max_length=100) #Dirección del usuario
     telefono = models.CharField(max_length=9) #Teléfono del usuario
-    email= models.EmailField()  #Email del usuario
-    fecha_matriculacion = models.DateField(null=False) #Fecha de matriculación del usuario
+    email= models.EmailField(unique=True)  #Email del usuario
+    fecha_matriculacion = models.DateTimeField(default=timezone.now) #Fecha de matriculación del usuario
     fecha_baja = models.DateField(default=None, null=True, blank=True) #Fecha de salida del usuario, es decir cuando el usuari apruebe el examen
+    
+    is_administador = models.BooleanField(default=False) #Campo para saber si el usuario es administrador
+    is_active = models.BooleanField(default=True) #Campo para saber si el usuario está activo
+    USERNAME_FIELD = 'dni' #Campo que se utiliza para el login
+    REQUIRED_FIELDS = ['nombre', 'apellidos', 'fecha_nacimiento', 'telefono', 'email'] #Campos que se deben rellenar para crear un usuario
+    objects = UsuarioManager() #Objeto para el login
+    
     def __str__(self):
         return "DNI: "+self.dni + "; Nombre " + self.nombre + " " + self.apellidos+"; Fecha de nacimiento: "+str(self.fecha_nacimiento)+"; Dirección: "+self.direccion+"; Teléfono: "+self.telefono
+    
+    def get_absolute_url(self):
+        return reverse('usuario-detail', args=[str(self.dni)])
+    
+    def has_perm(self, perm, obj = None):
+        return True
+    
+    def has_module_perms(self, app_label):
+        return True
+    
+    @property
+    def is_staff(self):
+        return self.is_administador
     
 class Examen (models.Model):
     #Esta clase representa a los exámenes que se realizan en la autoescuela
     id_Examen = models.AutoField(primary_key=True) 
     nombre_Examen = models.CharField(max_length=100) #Nombre del examen
     preguntas = models.ManyToManyField(Pregunta) #Relación con la clase Pregunta (Muchos a muchos)
+    
     def __str__(self):
         return "Examen: "+self.nombre_Examen+"; Preguntas: "+"".join(str(seg) for seg in self.preguntas.all())
     def get_absolute_url(self):
         return reverse(self.nombre_Examen, args=[str(self.id_Examen)])
     def display_preguntas(self):
         return ', '.join(pregunta.pregunta for pregunta in self.preguntas.all())
+    
+    @property
+    def all_preguntas(self):
+        return self.preguntas.all()
+    
     
     
 class Examen_Usuario (models.Model):
