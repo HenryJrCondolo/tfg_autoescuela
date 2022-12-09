@@ -35,15 +35,15 @@
   {% block content %}
   <div class="preguntaform">
     {% csrf_token %}
-    <h1 id="question_count"></h1>
+    <h1 class="container-fluid text-center" id="question_count"></h1>
     <div class="row">
-      <div class="col text-center">
+      <div class="col-md-4 text-center">
         {% load static %}
-        <a> <img id="imgPregunta" width="200px" height="200px"> </a>
+        <a> <img id="imgPregunta" > </a>
       </div>
-    </div>
+    
 
-    <div class="col">
+    <div class="col-md-8">
       <h5 id="question"></h5>
       <div class="container row">
         <div class="form-check ">
@@ -65,17 +65,25 @@
         </label>
       </div>
     </div>
+  </div>
     <div class="row">
       <div class="container col">
         <div class="row" style="margin-bottom: 5px ;">
-          <button class="next" style="display: block;">Siguiente</button>
+          <button class="next btn btn-primary" style="display: block;">Siguiente</button>
         </div>
       </div>
     </div>
     <div class="row">
       <div class="container col">
         <div class="row" style="margin-bottom: 5px ;">
-          <button class="end" id="fin" style="display: none;" >Finalizar</button>
+          <button class="end btn btn-warning" id="fin" style="display: none;" >Finalizar</button>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="container col">
+        <div class="row" style="margin-bottom: 5px ;">
+          <button class="exit btn btn-danger" id="salir" style="display: none;" >Salir</button>
         </div>
       </div>
     </div>

@@ -132,8 +132,7 @@ class Examen_Usuario (models.Model):
     id_Examen_Usuario = models.AutoField(primary_key=True)
     examen = models.ForeignKey(Examen, on_delete=models.CASCADE) #Relación con la clase Examen (Muchos a uno)
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE) #Relación con la clase Usuario (Muchos a uno)
-    respuestas_Usuario = ArrayField(models.TextField(), blank=True, default=None) #Array con las respuestas del usuario
-    id_preguntas_falladas = ArrayField(models.TextField(), blank=True, default=None, null=True)  #Array con las preguntas falladas por el usuario
+    preguntas_falladas = models.ManyToManyField(Pregunta) #Relación con la clase Pregunta (Muchos a muchos)
     aprobado = models.BooleanField(default=False) #Booleano que indica si el usuario ha aprobado el examen o no
     fecha = models.DateTimeField(default=timezone.now) #Fecha en la que se realiza el examen
         

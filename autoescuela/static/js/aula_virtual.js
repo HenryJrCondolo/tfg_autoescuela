@@ -82,15 +82,15 @@ var checkMarcado = [];
 function verificarRadioButtom() {
   if (document.getElementById("flexRadioDefault1").checked) {
     document.getElementById("flexRadioDefault1").checked = false;
-    checkMarcado[id] = [true, respuestasOrdenadas[id][0], "op1"];
+    checkMarcado[id] = [true, respuestasOrdenadas[id][0], "0"];
     return true;
   } else if (document.getElementById("flexRadioDefault2").checked) {
     document.getElementById("flexRadioDefault2").checked = false;
-    checkMarcado[id] = [true, respuestasOrdenadas[id][1], "op2"];
+    checkMarcado[id] = [true, respuestasOrdenadas[id][1], "1"];
     return true;
   } else if (document.getElementById("flexRadioDefault3").checked) {
     document.getElementById("flexRadioDefault3").checked = false;
-    checkMarcado[id] = [true, respuestasOrdenadas[id][2], "op3"];
+    checkMarcado[id] = [true, respuestasOrdenadas[id][2], "2"];
     return true;
   } else {
     alert("Seleccione una respuesta");
@@ -98,22 +98,42 @@ function verificarRadioButtom() {
   }
 }
 
+function seleccionarRespuestaCorrecta(id) {
+    console.log(respuestasOrdenadas[id]);
+    console.log(respuestasCorrectas[id]);
+    if (respuestasCorrectas[id] == respuestasOrdenadas[id][0]) {
+      flexRadioDefault1.setAttribute("style", "background-color: #fefefe; border: 5px solid #49FF33; border-radius: 50px;");
+      flexRadioDefault2.setAttribute("style", "");
+      flexRadioDefault3.setAttribute("style", "");
+    } else if (respuestasCorrectas[id] == respuestasOrdenadas[id][1]) {
+      flexRadioDefault2.setAttribute("style", "background-color: #fefefe; border: 5px solid #49FF33; border-radius: 50px;");
+      flexRadioDefault1.setAttribute("style", "");
+      flexRadioDefault3.setAttribute("style", "");
+    } else if (respuestasCorrectas[id] == respuestasOrdenadas[id][2]) {
+      flexRadioDefault3.setAttribute("style", "background-color: #fefefe; border: 5px solid #49FF33; border-radius: 50px;");
+      flexRadioDefault2.setAttribute("style", "");
+      flexRadioDefault1.setAttribute("style", "");
+      console.log("Correcto funcionamiento");
+    }
+}
+
 var totalPreguntasCorrectas = 0;
-function verificarRespuesta() {
+function verificarRespuesta(respuestasUser) {
   let respuestasFalladas = [];
-  respuestasCorrectas.forEach((respuestaCorrecta, index) => {
-    if (respuestaCorrecta == checkMarcado[index][1]) {
+  respuestasCorrectas.forEach((respuesta, index) => {
+    let button = document.getElementById(`btn${index+1}`);
+    if (respuesta == respuestasUser[index]) {
+      button.setAttribute("style","background-color: #00D303 !important;");
       totalPreguntasCorrectas++;
-      console.log(respuestaCorrecta);
     } else {
-      respuestasFalladas.push(checkMarcado[index][1]);
+      respuestasFalladas.push(respuestasUser[index]);
+      button.setAttribute("style","background-color: #D30000 !important;");
     }
   });
   return respuestasFalladas;
 }
 
 var id = 0;
-
 const cargaInicial = async () => {
   await mostrarPregunta(id);
   await enumPreguntas();
@@ -124,18 +144,23 @@ window.addEventListener("load", async () => {
 });
 
 fin.addEventListener("click", () => {
+  bloquearRadioButtom();
   comprobarExamen();
+  cambiarVisibilidadBotones();
 });
 
 const next = document.getElementsByClassName("next")[0];
 next.addEventListener("click", () => {
   if (verificarRadioButtom()) {
     // Verificar la respuesta del usuario
+    let button = document.getElementById(`btn${id+1}`);
+    button.setAttribute("style","background-color: #0061FF !important;");
     if (checkMarcado[id][0] == true && id < preguntas.length - 1) {
       ++id;
       mostrarPregunta(id);
     } else if (comprobarPreguntasContestadas()) {
-      alert("No hay más preguntas");
+      mostrarPregunta(0);
+      mostrarSeleccion(0);
       cambiarVisibilidadBotones();
     }
   } else {
@@ -143,7 +168,11 @@ next.addEventListener("click", () => {
   }
 });
 
-
+const bloquearRadioButtom = () => {
+  document.getElementById("flexRadioDefault1").disabled = true;
+  document.getElementById("flexRadioDefault2").disabled = true;
+  document.getElementById("flexRadioDefault3").disabled = true;
+};
 
 const cambiarVisibilidadBotones = async () => {
   var end = document.getElementsByClassName("end");
@@ -151,6 +180,10 @@ const cambiarVisibilidadBotones = async () => {
     if (x.style.display == "none") {
       x.style.display = "block";
       next.style.display = "none";
+    }
+    else {
+      x.style.display = "none";
+      salir.setAttribute("style", "display: block !important;");
     }
   });
 };
@@ -190,29 +223,18 @@ const enumPreguntas = async () => {
     let totalColumnas = preguntas.length / 2;
 
     for (let i = 1; i <= totalColumnas; i++) {
-      row1.innerHTML += `<a class="col " id="colPreguntas"> <button class="btn btn-primary"  id="btn${i}">${i}</button> </a>`;
+      row1.innerHTML += `<a class="col " id="colPreguntas"> <button class="btn btn-secondary"  id="btn${i}">${i}</button> </a>`;
     }
     for (let e = totalColumnas + 1; e <= preguntas.length; e++) {
-      row2.innerHTML += `<a class="col " id="colPreguntas"> <button class="btn btn-primary"  id="btn${e}">${e}</button> </a>`;
+      row2.innerHTML += `<a class="col " id="colPreguntas"> <button class="btn btn-secondary"  id="btn${e}">${e}</button> </a>`;
     }
     for (let a = 0; a < preguntas.length; a++) {
       let btn = document.getElementById(`btn${a + 1}`);
       btn.addEventListener("click", () => {
         id = a;
         mostrarPregunta(id);
-        try {
-          if (checkMarcado[id][2] == "op1") {
-            document.getElementById("flexRadioDefault1").checked = true;
-          } else if (checkMarcado[id][2] == "op2") {
-            document.getElementById("flexRadioDefault2").checked = true;
-          } else if (checkMarcado[id][2] == "op3") {
-            document.getElementById("flexRadioDefault3").checked = true;
-          }
-        } catch (error) {
-          document.getElementById("flexRadioDefault1").checked = false;
-          document.getElementById("flexRadioDefault2").checked = false;
-          document.getElementById("flexRadioDefault3").checked = false;
-        }
+        mostrarSeleccion(id);
+        seleccionarRespuestaCorrecta(id);
       });
     }
   } catch (error) {
@@ -220,15 +242,31 @@ const enumPreguntas = async () => {
   }
 };
 
+const mostrarSeleccion = async (id) => {
+  try {
+    if (checkMarcado[id][2] == "0") {
+      document.getElementById("flexRadioDefault1").checked = true;
+    } else if (checkMarcado[id][2] == "1") {
+      document.getElementById("flexRadioDefault2").checked = true;
+    } else if (checkMarcado[id][2] == "2") {
+      document.getElementById("flexRadioDefault3").checked = true;
+    }
+  } catch (error) {
+    document.getElementById("flexRadioDefault1").checked = false;
+    document.getElementById("flexRadioDefault2").checked = false;
+    document.getElementById("flexRadioDefault3").checked = false;
+  }
+};
+
 const comprobarExamen = async () => {
   try {
     let aprobado = false;
     let usuario = await obtenerUsuario();
-    let respuestasFalladas = verificarRespuesta();
     let respuestasUser = [];
     checkMarcado.forEach((check) => {
       respuestasUser.push(check[1]);
     });
+    let respuestasFalladas = verificarRespuesta(respuestasUser);
     if (respuestasFalladas.length <= 3) {
       aprobado = true;
     }
@@ -241,8 +279,16 @@ const comprobarExamen = async () => {
       aprobado: aprobado,
       examen: examenRealizado,
     };
-
     console.log(examen);
+    
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+const mostrarResultado = async () => {
+  try {
+    
   } catch (error) {
     console.log(error);
   }

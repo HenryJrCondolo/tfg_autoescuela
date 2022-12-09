@@ -43,5 +43,5 @@ class ExamenAdmin(admin.ModelAdmin):
 @admin.register(Examen_Usuario) # Register the admin class with the associated model
 class Examen_UsuarioAdmin(admin.ModelAdmin):
     # Define the fields to be displayed in the list view
-    list_display = ('usuario', 'examen', 'fecha', 'respuestas_Usuario', 'id_preguntas_falladas', 'aprobado')
-    fields = ['usuario', 'examen', 'fecha', 'respuestas_Usuario', 'id_preguntas_falladas', 'aprobado']
+    list_display = ('usuario', 'examen', 'fecha', 'preguntas_falladas', 'aprobado')
+    fields = ['usuario', 'examen', 'fecha', 'preguntas_falladas', 'aprobado']
