@@ -81,26 +81,48 @@ const mostrarPregunta = async (id) => {
 var checkMarcado = [];
 function verificarRadioButtom() {
   if (document.getElementById("flexRadioDefault1").checked) {
-    document.getElementById("flexRadioDefault1").checked = false;
     checkMarcado[id] = [true, respuestasOrdenadas[id][0], "0"];
-    return true;
   } else if (document.getElementById("flexRadioDefault2").checked) {
-    document.getElementById("flexRadioDefault2").checked = false;
     checkMarcado[id] = [true, respuestasOrdenadas[id][1], "1"];
-    return true;
   } else if (document.getElementById("flexRadioDefault3").checked) {
-    document.getElementById("flexRadioDefault3").checked = false;
     checkMarcado[id] = [true, respuestasOrdenadas[id][2], "2"];
-    return true;
   } else {
     alert("Seleccione una respuesta");
-    return false;
   }
 }
 
+let radio1 = document.querySelector('input[name="flexRadioDefault1"]');
+radio1.addEventListener("click", () => {
+  document.getElementById(`flexRadioDefault2`).checked=false;
+  document.getElementById(`flexRadioDefault3`).checked=false;
+ document.getElementById(`flexRadioDefault1`).checked=true;
+ verificarRadioButtom();
+ let button = document.getElementById(`btn${id+1}`);
+    button.setAttribute("style","background-color: #0061FF !important;");
+});
+
+let radio2 = document.querySelector('input[name="flexRadioDefault2"]');
+radio2.addEventListener("click", () => {
+  
+  document.getElementById(`flexRadioDefault3`).checked=false;
+ document.getElementById(`flexRadioDefault1`).checked=false;
+ document.getElementById(`flexRadioDefault2`).checked=true;
+ verificarRadioButtom();
+ let button = document.getElementById(`btn${id+1}`);
+    button.setAttribute("style","background-color: #0061FF !important;");
+});
+
+let radio3 = document.querySelector('input[name="flexRadioDefault3"]');
+radio3.addEventListener("click", () => {
+ document.getElementById(`flexRadioDefault2`).checked=false;
+ document.getElementById(`flexRadioDefault1`).checked=false;
+ document.getElementById(`flexRadioDefault3`).checked=true;
+ verificarRadioButtom();
+ let button = document.getElementById(`btn${id+1}`);
+    button.setAttribute("style","background-color: #0061FF !important;");
+});
+
 function seleccionarRespuestaCorrecta(id) {
-    console.log(respuestasOrdenadas[id]);
-    console.log(respuestasCorrectas[id]);
     if (respuestasCorrectas[id] == respuestasOrdenadas[id][0]) {
       flexRadioDefault1.setAttribute("style", "background-color: #fefefe; border: 5px solid #49FF33; border-radius: 50px;");
       flexRadioDefault2.setAttribute("style", "");
@@ -113,20 +135,18 @@ function seleccionarRespuestaCorrecta(id) {
       flexRadioDefault3.setAttribute("style", "background-color: #fefefe; border: 5px solid #49FF33; border-radius: 50px;");
       flexRadioDefault2.setAttribute("style", "");
       flexRadioDefault1.setAttribute("style", "");
-      console.log("Correcto funcionamiento");
     }
 }
 
-var totalPreguntasCorrectas = 0;
+
 function verificarRespuesta(respuestasUser) {
   let respuestasFalladas = [];
   respuestasCorrectas.forEach((respuesta, index) => {
     let button = document.getElementById(`btn${index+1}`);
     if (respuesta == respuestasUser[index]) {
       button.setAttribute("style","background-color: #00D303 !important;");
-      totalPreguntasCorrectas++;
     } else {
-      respuestasFalladas.push(respuestasUser[index]);
+      respuestasFalladas.push(preguntas[index].id_Pregunta);
       button.setAttribute("style","background-color: #D30000 !important;");
     }
   });
@@ -144,34 +164,37 @@ window.addEventListener("load", async () => {
 });
 
 fin.addEventListener("click", () => {
+  examenTerminado = true;
   bloquearRadioButtom();
-  comprobarExamen();
+  seleccionarRespuestaCorrecta(id);
+  verificarRespuesta(respuestasMarcadas());
   cambiarVisibilidadBotones();
 });
-
+var examenTerminado = false;
 const next = document.getElementsByClassName("next")[0];
 next.addEventListener("click", () => {
-  if (verificarRadioButtom()) {
-    // Verificar la respuesta del usuario
     let button = document.getElementById(`btn${id+1}`);
     button.setAttribute("style","background-color: #0061FF !important;");
-    if (checkMarcado[id][0] == true && id < preguntas.length - 1) {
-      ++id;
-      mostrarPregunta(id);
-    } else if (comprobarPreguntasContestadas()) {
-      mostrarPregunta(0);
-      mostrarSeleccion(0);
-      cambiarVisibilidadBotones();
+    try {
+      if (checkMarcado[id][0] == true && id < preguntas.length - 1) {
+        ++id;
+        mostrarPregunta(id);
+        mostrarSeleccion(id);
+      } else if (comprobarPreguntasContestadas()) {
+        mostrarPregunta(0);
+        mostrarSeleccion(0);
+        cambiarVisibilidadBotones();
+      }
+    } catch (error) {
+      alert("Seleccione una respuesta");
     }
-  } else {
-    alert("Compruebe que todas las preguntas esten contestadas");
-  }
+    
 });
 
 const bloquearRadioButtom = () => {
-  document.getElementById("flexRadioDefault1").disabled = true;
-  document.getElementById("flexRadioDefault2").disabled = true;
-  document.getElementById("flexRadioDefault3").disabled = true;
+    document.getElementById("flexRadioDefault1").disabled = true;
+    document.getElementById("flexRadioDefault2").disabled = true;
+    document.getElementById("flexRadioDefault3").disabled = true;
 };
 
 const cambiarVisibilidadBotones = async () => {
@@ -234,7 +257,9 @@ const enumPreguntas = async () => {
         id = a;
         mostrarPregunta(id);
         mostrarSeleccion(id);
-        seleccionarRespuestaCorrecta(id);
+        if (examenTerminado){
+          seleccionarRespuestaCorrecta(id);
+        }
       });
     }
   } catch (error) {
@@ -246,36 +271,46 @@ const mostrarSeleccion = async (id) => {
   try {
     if (checkMarcado[id][2] == "0") {
       document.getElementById("flexRadioDefault1").checked = true;
+      document.getElementById("flexRadioDefault3").checked = false;
+      document.getElementById("flexRadioDefault2").checked = false;
     } else if (checkMarcado[id][2] == "1") {
       document.getElementById("flexRadioDefault2").checked = true;
+      document.getElementById("flexRadioDefault1").checked = false;
+      document.getElementById("flexRadioDefault3").checked = false;
     } else if (checkMarcado[id][2] == "2") {
       document.getElementById("flexRadioDefault3").checked = true;
+      document.getElementById("flexRadioDefault1").checked = false;
+      document.getElementById("flexRadioDefault2").checked = false;
     }
   } catch (error) {
     document.getElementById("flexRadioDefault1").checked = false;
-    document.getElementById("flexRadioDefault2").checked = false;
-    document.getElementById("flexRadioDefault3").checked = false;
+      document.getElementById("flexRadioDefault2").checked = false;
+      document.getElementById("flexRadioDefault3").checked = false;
   }
 };
+
+function respuestasMarcadas(){
+  let respuestasUser = [];
+  checkMarcado.forEach((check) => {
+    respuestasUser.push(check[1]);
+  });
+  return respuestasUser;
+}
 
 const comprobarExamen = async () => {
   try {
     let aprobado = false;
     let usuario = await obtenerUsuario();
-    let respuestasUser = [];
-    checkMarcado.forEach((check) => {
-      respuestasUser.push(check[1]);
-    });
+    let respuestasUser = respuestasMarcadas();
     let respuestasFalladas = verificarRespuesta(respuestasUser);
     if (respuestasFalladas.length <= 3) {
       aprobado = true;
     }
-    let examenRealizado = examenSelect;
+    let examenRealizado = examenSelect.id_Examen;
 
     let examen = {
       usuario: usuario,
-      respuestas_Usuario: respuestasUser,
-      id_respuestas_falladas: respuestasFalladas,
+      respuestas_falladas: respuestasFalladas,
       aprobado: aprobado,
       examen: examenRealizado,
     };
@@ -285,10 +320,31 @@ const comprobarExamen = async () => {
     console.log(error);
   }
 }
+salir.addEventListener("click", () => {
+  try{
+    postExamen();
+  }catch(error){
+    console.log(error);
+  }
+});
 
-const mostrarResultado = async () => {
+const postExamen = async () => {
   try {
-    
+    let examenRealizado = comprobarExamen();
+    const res = await fetch("http://127.0.0.1:8000/api/examen_usuario/", {
+      method:`POST`, 
+      headers: {'Content-type': `application/json`},
+      body: JSON.stringify(examenRealizado)
+    });
+    if (res.ok) {
+      console.log("Examen enviado");
+      const jsonResponse = await res.json();
+      const {usuario, respuestas_falladas, aprobado, examen} = jsonResponse;
+      console.log(
+        `Usuario: ${usuario}, Respuestas falladas: ${respuestas_falladas}, Aprobado: ${aprobado}, Examen: ${examen}`
+      );
+    }
+
   } catch (error) {
     console.log(error);
   }
