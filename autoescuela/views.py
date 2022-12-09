@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from .models import Usuario, Permiso, Examen_Usuario, Examen, Pregunta, Tema
 from django.utils import timezone
-from django.views.generic.list import ListView
-from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.views.generic.list import ListView, View
+from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.http import JsonResponse
 
 # Create your views here.
@@ -16,7 +16,7 @@ class PregruntasListView(ListView):
     template_name = 'preguntas_list.html/'
 
 class PermisosListView(PermissionRequiredMixin,ListView):
-    permission_required = 'autoescuela.view_permiso'
+    permission_required = 'accounts/autoescuela.view_permiso'
     model = Permiso
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -24,7 +24,8 @@ class PermisosListView(PermissionRequiredMixin,ListView):
         return context
     template_name = 'permisos.html/'
     
-class IndexExamenListView(ListView):
+class IndexExamenListView(PermissionRequiredMixin,ListView):
+    permission_required = 'autoescuela.view_permiso'
     model = Examen
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

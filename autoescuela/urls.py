@@ -8,5 +8,6 @@ urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^permisos/$', views.PermisosListView.as_view(), name='permisos'),
     url(r'^aula_virtual/$', views.IndexExamenListView.as_view(), name='aula_virtual'),
+    url(r'^preguntas/(?P<pk>\d+)/$', views.PregruntasListView.as_view(), name='aula_virtual'),
 ]
 

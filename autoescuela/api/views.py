@@ -2,7 +2,8 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework import filters
 from autoescuela.models import Examen, Examen_Usuario, Pregunta, Permiso, Tema, Usuario
-from autoescuela.api.serializers import ExamenSerializer, Examen_UsuarioSerializer, PreguntaSerializer, PermisoSerializer, TemaSerializer, UsuarioSerializer
+from autoescuela.api.serializers import ExamenSerializer, Examen_UsuarioSerializer, PreguntaSerializer, PermisoSerializer, TemaSerializer, UsuarioSerializer, UserLoginSerializer
+from django.http import JsonResponse
 
 class ExamenViewSet(viewsets.ModelViewSet):
     serializer_class = ExamenSerializer
@@ -124,8 +125,9 @@ class UsuarioViewSet(viewsets.ModelViewSet):
         if logedin_user.is_superuser:
             return self.delete(request, *args, **kwargs)
         else:
-            response_message = {'message': 'No se ha eliminado'}
+            response_message = {'message': 'No tiene permisos para borrar usuario'}
             return Response(response_message)
+        
     
 class Examen_UsuarioViewSet(viewsets.ModelViewSet):
     serializer_class = Examen_UsuarioSerializer
@@ -149,3 +151,12 @@ class Examen_UsuarioViewSet(viewsets.ModelViewSet):
         else:
             response_message = {'message': 'No se ha eliminado'}
             return Response(response_message)
+        
+class UserLoginViewSet(viewsets.ModelViewSet):
+    serializer_class = UserLoginSerializer
+    
+    def get_queryset(self, *args, **kwargs):
+        queryset = Usuario.objects.filter(dni = self.request.user.dni)
+        return queryset
+    
+   

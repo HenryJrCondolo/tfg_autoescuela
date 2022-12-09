@@ -135,7 +135,7 @@ class Examen_Usuario (models.Model):
     respuestas_Usuario = ArrayField(models.TextField(), blank=True, default=None) #Array con las respuestas del usuario
     id_preguntas_falladas = ArrayField(models.TextField(), blank=True, default=None, null=True)  #Array con las preguntas falladas por el usuario
     aprobado = models.BooleanField(default=False) #Booleano que indica si el usuario ha aprobado el examen o no
-    fecha = models.DateField(null=False) #Fecha en la que se realiza el examen
+    fecha = models.DateTimeField(default=timezone.now) #Fecha en la que se realiza el examen
         
     def __str__(self): #Método que devuelve el nombre del examen y el nombre del usuario
         return "Examen: "+self.examen+"; Usuario: "+self.usuario+"; Respuestas del usuario: "+self.respuestas_Usuario+"; Preguntas falladas: "+self.preguntas_falladas+"; Aprobado: "+self.aprobado+"; Fecha: "+self.fecha

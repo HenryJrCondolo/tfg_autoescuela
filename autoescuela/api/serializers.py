@@ -30,4 +30,8 @@ class Examen_UsuarioSerializer(ModelSerializer):
     class Meta:
         model = Examen_Usuario
         fields = ['id_Examen_Usuario', 'examen', 'usuario', 'fecha', 'respuestas_Usuario', 'id_preguntas_falladas', 'aprobado']
-        
+
+class UserLoginSerializer(ModelSerializer):
+    class Meta:
+        model = Usuario
+        fields = ['dni', 'nombre', 'apellidos', 'email', 'telefono', 'direccion', 'fecha_nacimiento', 'fecha_baja', 'permiso', 'imagen_usuario']
