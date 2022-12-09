@@ -81,7 +81,7 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     fecha_nacimiento = models.DateField()
     imagen_usuario = models.ImageField(upload_to='imagenes_usuarios', null=True, blank=True) #Campo para subir imágenes de los usuarios
     direccion = models.CharField(max_length=100) #Dirección del usuario
-    telefono = models.CharField(max_length=12) #Teléfono del usuario
+    telefono = models.CharField(max_length=9) #Teléfono del usuario
     email= models.EmailField(unique=True)  #Email del usuario
     fecha_matriculacion = models.DateTimeField(default=timezone.now) #Fecha de matriculación del usuario
     fecha_baja = models.DateField(default=None, null=True, blank=True) #Fecha de salida del usuario, es decir cuando el usuari apruebe el examen
@@ -132,20 +132,14 @@ class Examen_Usuario (models.Model):
     id_Examen_Usuario = models.AutoField(primary_key=True)
     examen = models.ForeignKey(Examen, on_delete=models.CASCADE) #Relación con la clase Examen (Muchos a uno)
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE) #Relación con la clase Usuario (Muchos a uno)
-    preguntas_falladas = models.ManyToManyField(Pregunta) #Relación con la clase Pregunta para saber que preguntas se ha fallado 
-    #La idea era hacer un array de preguntas_falladas, no una relación pero debido a sqlite3 no es posible, ya que no admite arrays.
-
+    preguntas_falladas = models.ManyToManyField(Pregunta) #Relación con la clase Pregunta (Muchos a muchos)
     aprobado = models.BooleanField(default=False) #Booleano que indica si el usuario ha aprobado el examen o no
     fecha = models.DateTimeField(default=timezone.now) #Fecha en la que se realiza el examen
         
-    def display_preguntas_falladas(self):
-        return ', '.join(pregunta.pregunta for pregunta in self.preguntas_falladas.all())
     def __str__(self): #Método que devuelve el nombre del examen y el nombre del usuario
-        return "Examen: "+self.examen.nombre_Examen+"; Usuario: "+self.usuario.nombre+" "+self.usuario.apellidos+"; Aprobado: "+str(self.aprobado)+"; Fecha: "+str(self.fecha)
+        return "Examen: "+self.examen+"; Usuario: "+self.usuario+"; Respuestas del usuario: "+self.respuestas_Usuario+"; Preguntas falladas: "+self.preguntas_falladas+"; Aprobado: "+self.aprobado+"; Fecha: "+self.fecha
     def get_absolute_url(self):
         return reverse("model_detail", kwargs={"pk": self.pk})
-    def get_nombre_examen(self):
-        return self.examen.nombre_Examen
 
 
 

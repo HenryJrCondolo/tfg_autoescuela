@@ -144,5 +144,5 @@ REST_FRAMEWORK = {
     ]
 }
 
-#EMAIL BACKEND
+#EMAIL BACKEND 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
