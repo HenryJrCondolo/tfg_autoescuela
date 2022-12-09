@@ -3,7 +3,6 @@ from .models import Usuario, Permiso, Examen_Usuario, Examen, Pregunta, Tema
 from django.utils import timezone
 from django.views.generic.list import ListView, View
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
-from django.http import JsonResponse
 
 # Create your views here.
 def index(request):
@@ -32,4 +31,3 @@ class IndexExamenListView(PermissionRequiredMixin,ListView):
         context['examen_list'] = Examen.objects.all
         return context
     template_name = 'aula_virtual.html/'
-
