@@ -1,5 +1,9 @@
+
 {% extends "base_generic.html" %}
 {% block content %}
+{% block title %}
+  <title>Permiso B</title>
+  {% endblock %}
 {% if permiso_list %}
 <ul>
   {% for permiso in permiso_list %}

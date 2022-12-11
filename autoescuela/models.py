@@ -2,6 +2,7 @@ from django.utils import timezone
 import random
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
+from django.contrib.auth.models import Group
 from django.urls import reverse #Used to generate URLs by reversing the URL patterns
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
    
@@ -91,6 +92,8 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'dni' #Campo que se utiliza para el login
     REQUIRED_FIELDS = ['nombre', 'apellidos', 'fecha_nacimiento', 'telefono', 'email'] #Campos que se deben rellenar para crear un usuario
     objects = UsuarioManager() #Objeto para el login
+    groups = models.ManyToManyField(Group, blank=True) #Relación con la clase Group (Muchos a muchos)
+    
     
     def __str__(self):
         return "DNI: "+self.dni + "; Nombre " + self.nombre + " " + self.apellidos+"; Fecha de nacimiento: "+str(self.fecha_nacimiento)+"; Dirección: "+self.direccion+"; Teléfono: "+self.telefono
@@ -135,7 +138,9 @@ class Examen_Usuario (models.Model):
     preguntas_falladas = models.ManyToManyField(Pregunta) #Relación con la clase Pregunta (Muchos a muchos)
     aprobado = models.BooleanField(default=False) #Booleano que indica si el usuario ha aprobado el examen o no
     fecha = models.DateTimeField(default=timezone.now) #Fecha en la que se realiza el examen
-        
+     
+    def display_preguntas_falladas(self):
+        return ', '.join(pregunta.pregunta for pregunta in self.preguntas_falladas.all())   
     def __str__(self): #Método que devuelve el nombre del examen y el nombre del usuario
         return "Examen: "+self.examen+"; Usuario: "+self.usuario+"; Respuestas del usuario: "+self.respuestas_Usuario+"; Preguntas falladas: "+self.preguntas_falladas+"; Aprobado: "+self.aprobado+"; Fecha: "+self.fecha
     def get_absolute_url(self):

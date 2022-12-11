@@ -12,7 +12,7 @@ body {
   /* Margin bottom by footer height */
   margin-bottom: auto !important;
 }
-
+/* CSSS DE LA BARRA DE NAVEGACION */
 .nav-link,
 .navbar-brand {
   font-size: 19px;
@@ -23,16 +23,7 @@ body {
 .navbar-brand:hover {
   color: rgb(14, 81, 216);
 }
-.footer {
-  margin-top: auto;
-  background-image: url("footer.png");
-  background-repeat: no-repeat;
-  opacity: 0.95;
-  background-size: cover;
-  background-position: center;
-  /* Set the fixed height of the footer here */
-  height: auto !important;
-}
+
 #grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -51,104 +42,23 @@ body {
   white-space: nowrap;
 }
 
-.card {
-  align-items: center;
-  justify-content: center;
-  margin-top: 25px !important;
-  margin-bottom: 25px !important;
-  margin-left: 30px !important;
-  margin-right: 5px !important;
-  min-height: 500px !important;
-  background-color: rgba(255, 255, 255, 0.925);
-  border-radius: 2%;
-  -webkit-border-radius: 2%;
-  -moz-border-radius: 2%;
-  -ms-border-radius: 2%;
-  -o-border-radius: 2%;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-  opacity: 0.95;
-}
-div.card > img {
-  border-radius: 5%;
-  -webkit-border-radius: 5%;
-  -moz-border-radius: 5%;
-  -ms-border-radius: 5%;
-  -o-border-radius: 5%;
-  margin: 5px;
-}
-#carouselExampleDark {
-  margin:  25px !important;
-  min-height: 500px !important;
-  background-color: rgba(255, 255, 255, 0.925);
-  border-radius: 5%;
-  -webkit-border-radius: 5%;
-  -moz-border-radius: 5%;
-  -ms-border-radius: 5%;
-  -o-border-radius: 5%;
-}
-#textoCarrusel {
-  display: flex;
-  align-items: center;
-
-}
-#imagenesCarrusel {
-  height: 340px !important;
-  max-width: 550px !important;
-  border-radius: 10%;
-  -webkit-border-radius: 10%;
-  -moz-border-radius: 10%;
-  -ms-border-radius: 10%;
-  -o-border-radius: 10%;
-}
-
 .minavbar{
   background-image: var(--bs-gradient)!important;
   --bs-bg-opacity: 1;
   background-color: rgba(var(--bs-dark-rgb),var(--bs-bg-opacity))!important;
 }
 
-.loginform{
-  
-margin: auto !important;
-  background-color: rgba(255, 255, 255, 0.74);
-  border-radius: 5%;
-  padding: 20px 30px;
-  -webkit-border-radius: 5%;
-  -moz-border-radius: 5%;
-  -ms-border-radius: 5%;
-  -o-border-radius: 5%;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+/* CSS DEL FOOTER */
+
+.footer {
+  margin-top: auto;
+  background-image: url("footer.png");
+  background-repeat: no-repeat;
   opacity: 0.95;
-}
-.loginform h5{
-  margin: 0;
-  text-align: center;
-  height: 40px;
-  margin-bottom: 30px;
-  border-bottom: 1px solid;
-  font-size: 20px;
-}
-.loginform input{
-  width: 100% !important;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  padding: 11px 10px;
-}
-
-.loginform p{
-  height: 40px;
-  text-align: center;
-}
-.loginform>p{
-  color: rgb(255, 4, 4);
-  text-decoration: none;
-}
-
-p>a{
-  text-decoration: none;
-}
-p>a:hover{
-  text-decoration: underline;
+  background-size: cover;
+  background-position: center;
+  /* Set the fixed height of the footer here */
+  height: auto !important;
 }
 
 

@@ -2,12 +2,13 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework import filters
 from autoescuela.models import Examen, Examen_Usuario, Pregunta, Permiso, Tema, Usuario
-from autoescuela.api.serializers import ExamenSerializer, Examen_UsuarioSerializer, PreguntaSerializer, PermisoSerializer, TemaSerializer, UsuarioSerializer, UserLoginSerializer
+from autoescuela.api.serializers import cargarExamenesUsuarioSerializer,ExamenSerializer, Examen_UsuarioSerializer, PreguntaSerializer, PermisoSerializer, TemaSerializer, UsuarioSerializer, UserLoginSerializer
 from django.http import JsonResponse
+
+
 
 class ExamenViewSet(viewsets.ModelViewSet):
     serializer_class = ExamenSerializer
-    lookup_field = 'id_Examen'
     queryset = Examen.objects.all()
     filter_backends = (filters.SearchFilter,)
     search_fields = ('nombre_Examen', 'id_Examen')
@@ -152,6 +153,10 @@ class Examen_UsuarioViewSet(viewsets.ModelViewSet):
             response_message = {'message': 'No se ha eliminado'}
             return Response(response_message)
         
+    def get_usuario_class(self, *args, **kwargs):
+        queryset = Examen_Usuario.objects.filter(usuario = self.request.user.dni)
+        return JsonResponse({'data': list(queryset.values())})
+        
 class UserLoginViewSet(viewsets.ModelViewSet):
     serializer_class = UserLoginSerializer
     
@@ -159,4 +164,10 @@ class UserLoginViewSet(viewsets.ModelViewSet):
         queryset = Usuario.objects.filter(dni = self.request.user.dni)
         return queryset
     
-   
+class cargarExamenesUsuarioViewSet(viewsets.ModelViewSet):
+    serializer_class = cargarExamenesUsuarioSerializer
+    
+    def get_queryset(self, *args, **kwargs):
+        queryset = Examen_Usuario.objects.filter(usuario = self.request.user.dni)
+        return queryset
+
