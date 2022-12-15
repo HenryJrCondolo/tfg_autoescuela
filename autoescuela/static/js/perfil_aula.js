@@ -1,3 +1,5 @@
+const URLAPI = "http://127.0.0.1:8000/";
+
 const cargaInicial = async () => {
   await cargarExamenesUsuario();
 };
@@ -8,9 +10,7 @@ window.addEventListener("load", async () => {
 
 const cargarExamenesUsuario = async () => {
   try {
-    const response = await fetch(
-      "http://127.0.0.1:8000/api/cargarExamenesUsuario/"
-    );
+    const response = await fetch(URLAPI + "api/cargarExamenesUsuario/");
     const examenes = await response.json();
     //console.log(examenes[0].get_usuario_class);
     calcularMediaExamenes(examenes);
@@ -30,6 +30,7 @@ const calcularMediaExamenes = (examenes) => {
     }
   }
   media = (media / examenes.length) * 100;
+  media = media.toFixed(2);
   valorBarra(media);
 };
 
@@ -46,29 +47,16 @@ const valorBarra = (media) => {
   }
 };
 
-/*const mostrarExamenes = (examenes) => {
-    examenes.forEach(examen => {
-        const div = document.getElementById("examenesUsuario");
-        div.innerHTML = `
-                    <h5>Nombre del examen: ${examen.examen}</h5>
-                    <p>Fecha realizada: ${examen.fecha}</p>
-                    <p>Examen aprobado: ${examen.aprobado}</p>
-                    <p>Preguntas falladas: ${examen.preguntas_falladas}</p>
-        `;
-    });
-};*/
-
 const obtenerDatos = async (examenesUsuario) => {
   try {
-    const resPreguntas = await fetch("http://127.0.0.1:8000/api/pregunta/");
+    const resPreguntas = await fetch(URLAPI + "api/pregunta/");
     const preguntas = await resPreguntas.json();
-    const resExamenes = await fetch("http://127.0.0.1:8000/api/examen/");
+    const resExamenes = await fetch(URLAPI + "api/examen/");
     const examenes = await resExamenes.json();
 
     let arrayExamenesUsuario = [];
     let arrayPreguntas = [];
     let totalPreguntasFalladas = [];
-    //console.log(examenesUsuario);
     examenes.forEach((examen) => {
       examenesUsuario.forEach((examenUsuario) => {
         if (examen.id_Examen == examenUsuario.examen) {
@@ -76,23 +64,21 @@ const obtenerDatos = async (examenesUsuario) => {
           examen.preguntas.forEach((pregunta) => {
             arrayPreguntas.push(pregunta);
             examenUsuario.preguntas_falladas.forEach((preguntaFallada) => {
-              //console.log(pregunta);
               if (pregunta == preguntaFallada) {
                 totalPreguntasFalladas.push(pregunta);
               }
-              });
             });
+          });
         }
       });
     });
-   
-    //console.log(totalPreguntasFalladas);
+
     let arrayClasePreguntasFalladas = [];
     let arrayClasePreguntas = [];
     preguntas.forEach((pregunta) => {
       arrayPreguntas.forEach((preguntasExamenes) => {
-        if (pregunta.id_Pregunta == preguntasExamenes){
-            arrayClasePreguntas.push(pregunta);
+        if (pregunta.id_Pregunta == preguntasExamenes) {
+          arrayClasePreguntas.push(pregunta);
         }
       });
       totalPreguntasFalladas.forEach((preguntaFallada) => {
@@ -101,34 +87,48 @@ const obtenerDatos = async (examenesUsuario) => {
         }
       });
     });
-   //console.log(arrayClasePreguntasFalladas);
-    //console.log(arrayClasePreguntas);
     await calcularMediaTemas(arrayClasePreguntas, arrayClasePreguntasFalladas);
   } catch (error) {
     console.log(error);
   }
 };
 var index;
-const calcularMediaTemas = async (arrayClasePreguntas, arrayClasePreguntasFalladas) => {
+const calcularMediaTemas = async (
+  arrayClasePreguntas,
+  arrayClasePreguntasFalladas
+) => {
   let media = 0;
   let porcentajeFallosTema = [];
-  const resTemas = await fetch("http://127.0.0.1:8000/api/tema/");
+  const resTemas = await fetch(URLAPI + "api/tema/");
   const temas = await resTemas.json();
-  
+
   let arrayTemasFallados = ordenarPorTemas(temas, arrayClasePreguntasFalladas);
   let arrayTemas = ordenarPorTemas(temas, arrayClasePreguntas);
   
   
   for (let i = 0; i < temas.length; i++) {
-    let porcentaje = ((arrayTemasFallados[i] / arrayTemas[i]) * 100);
-      porcentajeFallosTema.push(Math.round(porcentaje));    
+    let porcentaje;
+   
+    porcentaje = (arrayTemasFallados[i] / arrayTemas[i]) * 100;
+    porcentaje = porcentaje.toFixed(2);
+    porcentajeFallosTema[i]=porcentaje;
+    if (
+      porcentajeFallosTema[i] == null ||
+      porcentajeFallosTema[i] == undefined
+    ) {
+      porcentajeFallosTema[i]=0;
+    } else if (isNaN(porcentajeFallosTema[i])) {
+      porcentajeFallosTema[i]=0;
+    } 
+    
+    console.log(porcentajeFallosTema[i]);
   }
-  
+
   mostrarPorcentajeTema(porcentajeFallosTema, temas);
   return porcentajeFallosTema;
 };
 
-function ordenarPorTemas(temas, preguntas){
+function ordenarPorTemas(temas, preguntas) {
   let totalPreTem = 0;
   let arrayTemas = [];
   temas.forEach((tema) => {
@@ -143,14 +143,14 @@ function ordenarPorTemas(temas, preguntas){
   return arrayTemas;
 }
 
-const mostrarPorcentajeTema = (porcentajeFallosTema,temas) => {
+const mostrarPorcentajeTema = (porcentajeFallosTema, temas) => {
   try {
     let botonTemas = document.getElementsByClassName("dropmenuTema")[0];
 
     //console.log(botonTemas);
     temas.forEach((tema, i) => {
       const element = temas[i];
-      botonTemas.innerHTML += `<li><a class="dropdown-item tema${i}" href="#">Tema = ${tema.tema}</a></li>`;
+      botonTemas.innerHTML += `<li><a class="dropdown-item tema${i}" href="#" style=" z-index:999 ">Tema = ${tema.tema}</a></li>`;
       //console.log(porcentaje);
     });
 

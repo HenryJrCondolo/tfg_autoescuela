@@ -36,7 +36,10 @@
             <li class="nav-item">
               <a class="nav-link" aria-current="page" href="{% url 'index' %}">Inicio</a>
             </li>
-            <li class="nav-item dropdown">
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'permisos' %}">Permisos</a>
+            </li>
+            <!--li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="{% url 'permisos' %}" role="button" data-bs-toggle="dropdown"
                 aria-expanded="true">
                 Permisos
@@ -51,24 +54,30 @@
                   <a class="dropdown-item" href="#">Permiso de Autobus</a>
                 </li>
               </ul>
-            </li>
+            </li-->
             <li class="nav-item">
               <a class="nav-link" href="{% url 'perfil_aula' %}">Zona Alumnos</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Nosotros</a>
+              <a class="nav-link" href="{% url 'info_autoescuela' %}">Nosotros</a>
             </li>
             {% if user.is_authenticated %}
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="{% url 'permisos' %}" role="button" data-bs-toggle="dropdown"
                 aria-expanded="false">
-                Perfil
+                  Usuario : {{ user.nombre }}
+                  <img src="/media/{{ user.imagen_usuario }}" width="50px" style="border-radius: 30px; height:40px width:40px" />
               </a>
               <ul class="dropdown-menu">
                 <li><a class="dropdown-item" href="#">Usuario: {{ user.get_username }}</a></li>
+                {% if user.is_administrador %}
+                <li><a class="dropdown-item" href="{% url 'listar_usuarios' %}">Administración</a></li>
+            {% endif %}
                 <li><a class="dropdown-item" href="{% url 'logout'%}?next={{request.path}}">Logout</a></li>
+                
               </ul>
             </li>
+            
             {% else %}
             <li class="nav-item"><a class="nav-link" href="{% url 'login'%}?next={{request.path}}">Login/Sing Up</a>
             </li>

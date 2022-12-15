@@ -13,16 +13,23 @@ class Tema(models.Model):
     id_Tema =  models.AutoField(primary_key=True) #Identificador del tema
     tema = models.CharField(max_length=100) #Nombre del tema
     descripcion = models.TextField() #Descripción del tema
+    
+    class Meta:
+        ordering = ["tema"]
+    
     def __str__(self):
-        return "Tema: "+self.tema+"; Descripción: "+self.descripcion
+        return "Tema: "+self.tema
     
 class Permiso(models.Model):
     #Esta clase representa a los permisos que se pueden obtener en la autoescuela
     tipo_licencia = models.CharField(primary_key=True, max_length=11, unique=True) #Tipo de licencia A, B, C, D 
     descripcion = models.TextField() #Descripción del permiso
     precio = models.FloatField(null=True, blank=True, default=0.0) #Precio del permiso
+    
+    class Meta:
+        ordering = ["tipo_licencia"]
     def __str__(self):
-        return "Permiso: "+self.tipo_licencia+"; precio: "+str(self.precio)+"; Descripción: "+self.descripcion
+        return "Permiso: "+self.tipo_licencia
      
 class Pregunta(models.Model):
     #Esta clase representa a las preguntas de que generan los exámenes
@@ -35,8 +42,11 @@ class Pregunta(models.Model):
     respuesta_Correcta = models.TextField()
     imagen_pregunta = models.ImageField(upload_to='imagenes_preguntas', null=True, blank=True) #Campo para subir imágenes de las preguntas
     descripcion_adicional = models.TextField(null=True, blank=True) #Campo para añadir descripciones adicionales a la respuesta correcta
+    
+    class Meta:
+        ordering = ["tema"]
     def __str__(self):
-        return "Pregunta: "+self.pregunta+"; Tema: "+ self.tema.tema+ "; Permiso: "+self.permiso.tipo_licencia + "; Respuesta Correcta: " + self.respuesta_Correcta+"; Respuesta Falsa 1: "+self.respuesta_Falsa_1+"; Respuesta Falsa 2: "+self.respuesta_Falsa_2+"; Descripción adicional: "+self.descripcion_adicional
+        return "Pregunta: "+self.pregunta+"; Tema: "+ self.tema.tema+ "; Permiso: "+self.permiso.tipo_licencia
     def ordenar_respuestas(self):
         lista_respuestas = [self.respuesta_Correcta, self.respuesta_Falsa_1, self.respuesta_Falsa_2]
         random.shuffle(lista_respuestas)
@@ -69,7 +79,7 @@ class UsuarioManager(BaseUserManager):
             telefono=telefono,
             password=password,
         )
-        user.is_administador = True
+        user.is_administrador = True
         user.save()
         return user
     
@@ -87,16 +97,17 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     fecha_matriculacion = models.DateTimeField(default=timezone.now) #Fecha de matriculación del usuario
     fecha_baja = models.DateField(default=None, null=True, blank=True) #Fecha de salida del usuario, es decir cuando el usuari apruebe el examen
     
-    is_administador = models.BooleanField(default=False) #Campo para saber si el usuario es administrador
+    is_administrador = models.BooleanField(default=False) #Campo para saber si el usuario es administrador
     is_active = models.BooleanField(default=True) #Campo para saber si el usuario está activo
     USERNAME_FIELD = 'dni' #Campo que se utiliza para el login
     REQUIRED_FIELDS = ['nombre', 'apellidos', 'fecha_nacimiento', 'telefono', 'email'] #Campos que se deben rellenar para crear un usuario
     objects = UsuarioManager() #Objeto para el login
     groups = models.ManyToManyField(Group, blank=True) #Relación con la clase Group (Muchos a muchos)
     
-    
+    class Meta:
+        ordering = ["nombre"]
     def __str__(self):
-        return "DNI: "+self.dni + "; Nombre " + self.nombre + " " + self.apellidos+"; Fecha de nacimiento: "+str(self.fecha_nacimiento)+"; Dirección: "+self.direccion+"; Teléfono: "+self.telefono
+        return "DNI: "+self.dni + ", Nombre " + self.nombre + " " + self.apellidos
     
     def get_absolute_url(self):
         return reverse('usuario-detail', args=[str(self.dni)])
@@ -109,7 +120,7 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     
     @property
     def is_staff(self):
-        return self.is_administador
+        return self.is_administrador
     
 class Examen (models.Model):
     #Esta clase representa a los exámenes que se realizan en la autoescuela
@@ -117,12 +128,14 @@ class Examen (models.Model):
     nombre_Examen = models.CharField(max_length=100) #Nombre del examen
     preguntas = models.ManyToManyField(Pregunta) #Relación con la clase Pregunta (Muchos a muchos)
     
+    class Meta:
+        ordering = ["nombre_Examen"]
     def __str__(self):
-        return "Examen: "+self.nombre_Examen+"; Preguntas: "+"".join(str(seg) for seg in self.preguntas.all())
+        return "Examen: "+self.nombre_Examen
     def get_absolute_url(self):
         return reverse(self.nombre_Examen, args=[str(self.id_Examen)])
     def display_preguntas(self):
-        return ', '.join(pregunta.pregunta for pregunta in self.preguntas.all())
+        return ', '.join(pregunta.id_Pregunta for pregunta in self.preguntas.all())
     
     @property
     def all_preguntas(self):
@@ -139,10 +152,12 @@ class Examen_Usuario (models.Model):
     aprobado = models.BooleanField(default=False) #Booleano que indica si el usuario ha aprobado el examen o no
     fecha = models.DateTimeField(default=timezone.now) #Fecha en la que se realiza el examen
      
+    class Meta:
+        ordering = ["usuario"]
     def display_preguntas_falladas(self):
         return ', '.join(pregunta.pregunta for pregunta in self.preguntas_falladas.all())   
-    def __str__(self): #Método que devuelve el nombre del examen y el nombre del usuario
-        return "Examen: "+self.examen+"; Usuario: "+self.usuario+"; Respuestas del usuario: "+self.respuestas_Usuario+"; Preguntas falladas: "+self.preguntas_falladas+"; Aprobado: "+self.aprobado+"; Fecha: "+self.fecha
+    def __str__(self):
+        return "Examen: "+str(self.examen.id_Examen)+"; Usuario: "+str(self.usuario.nombre)+"; Preguntas falladas: "+", ".join(str(seg.id_Pregunta) for seg in self.preguntas_falladas.all())+"; Aprobado: "+str(self.aprobado)+"; Fecha: "+str(self.fecha)
     def get_absolute_url(self):
         return reverse("model_detail", kwargs={"pk": self.pk})
 

@@ -18,6 +18,8 @@ var examenTerminado = false; //Variable para saber si el examen ha terminado
 var miform = document.getElementById("form"); //Variable para obtener datos del formulario
 var csrftoken = miform.querySelector("[name=csrfmiddlewaretoken]").value; //Variable para guardar el token csrf
 
+const URLAPI = "http://127.0.0.1:8000/";
+
 //Alerta para que no se cierre la pagina sin guardar
 window.addEventListener("beforeunload", function (event) {
   // Muestra una alerta al usuario
@@ -47,13 +49,22 @@ function inicarTemporizador() {
     tiempoRestante--;
     let minutos = Math.floor(tiempoRestante / 60);
     let segundos = tiempoRestante % 60;
+    if (minutos < 10) {
+      minutos = "0" + minutos;
+    } else if (segundos < 10) {
+      segundos = "0" + segundos;
+    };
+    if (tiempoRestante == 0) {
+      clearInterval(temporizador);
+      alert("Se ha acabado el tiempo");
+    };
     document.getElementById("temporizador").innerHTML = `${minutos}:${segundos}`;
   }, 1000);
 }
 //Funcion para seleccionar el examen aleatorio
 const selecionarExamen = async () => {
   try {
-    const res = await fetch("http://127.0.0.1:8000/api/examen/");
+    const res = await fetch(URLAPI+"api/examen/");
     const data = await res.json();
     random = Math.floor(Math.random() * data.length);
 
@@ -71,7 +82,7 @@ const selecionarExamen = async () => {
 //Funcion para obtener las preguntas del examen seleccionado y reordenar las respuestas posicionandolas aleatoriamente
 const obtenerPreguntas = async () => {
   try {
-    const res = await fetch("http://127.0.0.1:8000/api/pregunta/");
+    const res = await fetch(URLAPI+"api/pregunta/");
     const data = await res.json();
 
     if (data) {
@@ -282,7 +293,7 @@ const comprobarPreguntasContestadas = () => {
 //Funcion para obtener el usuario logueado para posteriormente guardar el examen en la base de datos
 const obtenerUsuario = async () => {
   try {
-    const res = await fetch("http://127.0.0.1:8000/api/usuariologged/");
+    const res = await fetch(URLAPI+"api/usuariologged/");
     const data = await res.json();
     if (data) {
       let usuario = data[0];
@@ -365,7 +376,7 @@ const enviarExamen = async () => {
       aprobado = true;
     }
     let examenRealizado = examenSelect.id_Examen;
-    const res = await fetch("http://127.0.0.1:8000/api/examen_usuario/", {
+    const res = await fetch(URLAPI+"api/examen_usuario/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -379,7 +390,6 @@ const enviarExamen = async () => {
       }),
     });
     if (res.ok) {
-      alert("Examen enviado");
       const jsonResponse = await res.json();
       const { usuario, preguntas_falladas, aprobado, examen } = jsonResponse;
       console.log(
@@ -392,6 +402,7 @@ const enviarExamen = async () => {
           " Examen: " +
           examen
       );
+    window.close();
     }
   } catch (error) {
     console.log(error);
@@ -401,7 +412,6 @@ const enviarExamen = async () => {
 //Funcion para enviar el examen al pulsar el boton de salir y redirigir al usuario a la pagina de inicio del aulavirtual
 salir.addEventListener("click", () => {
   enviarExamen();
-  window.close();
 });
 
 

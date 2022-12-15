@@ -1,6 +1,6 @@
 body {
   background: #bfbfbf;
-  background-image: url(/media/background/OF18O70.jpg);
+  background-image: url(/media/background/background_admin.jpg);
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-position: center;
@@ -21,7 +21,7 @@ body {
 
 .nav-link:hover,
 .navbar-brand:hover {
-  color: rgb(14, 81, 216);
+  color: rgb(147, 211, 234);
 }
 
 #grid {
@@ -54,11 +54,16 @@ body {
   margin-top: auto;
   background-image: url("footer.png");
   background-repeat: no-repeat;
-  opacity: 0.95;
+  opacity: 0.80;
   background-size: cover;
   background-position: center;
   /* Set the fixed height of the footer here */
   height: auto !important;
+}
+
+.list-unstyled ul li{
+  font-size: 20px;
+  margin: 25px !important;
 }
 
 

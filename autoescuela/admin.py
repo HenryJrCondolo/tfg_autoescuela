@@ -31,8 +31,8 @@ class PreguntaAdmin(admin.ModelAdmin):
 class UsuarioAdmin(admin.ModelAdmin):
    
     # Define the fields to be displayed in the list view
-    list_display = ('dni', 'nombre', 'apellidos', 'email','password', 'is_administador', 'telefono', 'direccion', 'fecha_nacimiento', 'fecha_baja', 'permiso', 'imagen_usuario')
-    fields = ['dni','nombre', 'apellidos','password', 'email', 'telefono','is_administador', 'is_active', 'direccion', 'fecha_nacimiento', 'fecha_baja', 'permiso', 'imagen_usuario']
+    list_display = ('dni', 'nombre', 'apellidos', 'email','password', 'is_administrador', 'telefono', 'direccion', 'fecha_nacimiento', 'fecha_baja', 'permiso', 'imagen_usuario')
+    fields = ['dni','nombre', 'apellidos','password', 'email', 'telefono','is_administrador', 'is_active', 'direccion', 'fecha_nacimiento', 'fecha_baja', 'permiso', 'imagen_usuario']
 
 
 @admin.register(Examen) # Register the admin class with the associated model

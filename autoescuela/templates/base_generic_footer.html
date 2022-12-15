@@ -36,28 +36,28 @@
         <hr class="clearfix w-100 d-md-none">
   
         <!-- Grid column -->
-        <div class="col-md-3 mx-auto">
+        <!--div class="col-md-3 mx-auto">
   
-          <!-- Lista de permisos de conducir -->
+          <-- Lista de permisos de conducir 
           <h5 class="font-weight-bold text-uppercase mt-3 mb-4">Permisos</h5>
   
           <ul class="list-unstyled">
             <li>
-              <a href="#!">Permiso A</a>
+              <a href="#!" ><p>Permiso A<p></a>
             </li>
             <li>
-              <a href="#!">Permiso B</a>
+              <a href="#!"><p>Permiso B<p></a>
             </li>
             <li>
-              <a href="#!">Permiso C</a>
+              <a href="#!"><p>Permiso C<p></a>
             </li>
             <li>
-              <a href="#!">Permiso D</a>
+              <a href="#!"><p>Permiso D<p></a>
             </li>
           </ul>
   
         </div>
-        <!-- Grid column -->
+        < Grid column -->
   
         <hr class="clearfix w-100 d-md-none">
   
@@ -69,16 +69,16 @@
   
           <ul class="list-unstyled">
             <li>
-              <p> Autoescuela Santa Lupita </p>
+              <a href="{% url 'index' %}"><p>Autoescuela Lupita</p></a>
             </li>
             <li>
-              <a href="#!">Link 2</a>
+              <a href="{% url 'perfil_aula' %}"><p>Aula virtual</p></a>
             </li>
             <li>
-              <a href="#!">Link 3</a>
+              <a href="{% url 'info_autoescuela' %}"><p>Nosotros</p></a>
             </li>
             <li>
-              <a href="#!">Link 4</a>
+              <a href="{% url 'permisos' %}"><p>Permisos</p></a>
             </li>
           </ul>
   
@@ -92,8 +92,12 @@
     <!-- Footer Links -->
   
     <!-- Copyright -->
-    <div class="footer-copyright text-center py-3">© 2020 Copyright:
-      <a href="/"> MDBootstrap.com</a>
+    <div class="footer-copyright text-center py-3">
+      <a>
+        <img src="/media/imagenes_autoescuela/licencia.png" width="80px" height="30px" class="d-inline-block align-top" alt="">
+      </a> 
+      2022 Copyright:
+      <a href="/"> autolupita.com</a>
     </div>
     <!-- Copyright -->
   

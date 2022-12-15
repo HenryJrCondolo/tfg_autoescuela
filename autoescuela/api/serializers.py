@@ -24,7 +24,7 @@ class ExamenSerializer(ModelSerializer):
 class UsuarioSerializer(ModelSerializer):
     class Meta:
         model = Usuario
-        fields = ['dni', 'nombre', 'apellidos', 'email', 'telefono','groups','is_administador', 'direccion', 'fecha_nacimiento', 'fecha_baja', 'permiso', 'imagen_usuario']
+        fields = ['dni', 'nombre', 'apellidos', 'email', 'telefono','groups','is_administrador', 'direccion', 'fecha_nacimiento', 'fecha_baja', 'permiso', 'imagen_usuario']
 
 class Examen_UsuarioSerializer(ModelSerializer):
     class Meta:
