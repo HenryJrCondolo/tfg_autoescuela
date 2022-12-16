@@ -5,6 +5,7 @@ var miform = document.getElementById("form"); //Variable para obtener datos del 
 var csrftoken = miform.querySelector("[name=csrfmiddlewaretoken]").value; //Variable para guardar el token csrf
 
 btnGenerar.addEventListener("click", async function () {
+    //Funcion para generar el examen
     try {
         const res = await fetch("http://127.0.0.1:8000/api/pregunta/");
         const data = await res.json();
@@ -33,6 +34,7 @@ btnGenerar.addEventListener("click", async function () {
 });
 
 function seleccionarPermiso() {
+    //Funcion para seleccionar el permiso
     let permisos = document.getElementById("permisos").value;
     let permiso;
     switch (permisos) {
@@ -53,6 +55,7 @@ function seleccionarPermiso() {
 }
 
 function maxPreguntas(permiso) {
+    //Funcion para seleccionar el permiso
     let cantidad;
     switch (permiso) {
         case "A":
@@ -72,6 +75,7 @@ function maxPreguntas(permiso) {
 }
 
 function mostrarPreguntas(preguntas) {
+    //Funcion para mostrar las preguntas
     let html = "";
     preguntas.forEach((pregunta) => {
         html += `

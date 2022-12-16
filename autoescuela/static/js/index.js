@@ -4,7 +4,7 @@ function sendEmail() {
     var phone = document.getElementById('phone').value;
     var subject = document.getElementById('subject').value;
     var message = document.getElementById('message').value;
-  
+  //  var body = 'Nombre: ' + name + 'nEmail: ' + email + 'nTeléfono: ' + phone + 'nMensaje: ' + message;
     if (name == "") {
       alert("Por favor ingresa tu nombre");
       return false;

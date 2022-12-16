@@ -1,14 +1,16 @@
-const URLAPI = "http://127.0.0.1:8000/";
+const URLAPI = "http://127.0.0.1:8000/"; // Cambiar por la URL de la API
 
-const cargaInicial = async () => {
+
+const cargaInicial = async () => {//carga inicial
   await cargarExamenesUsuario();
 };
 
-window.addEventListener("load", async () => {
+window.addEventListener("load", async () => {//carga inicial
   await cargaInicial();
 });
 
 const cargarExamenesUsuario = async () => {
+  //carga los examenes del usuario
   try {
     const response = await fetch(URLAPI + "api/cargarExamenesUsuario/");
     const examenes = await response.json();
@@ -23,6 +25,7 @@ const cargarExamenesUsuario = async () => {
 };
 
 const calcularMediaExamenes = (examenes) => {
+  //calcula la media de los examenes
   let media = 0;
   for (let i = 0; i < examenes.length; i++) {
     if (examenes[i].aprobado == true) {
@@ -35,6 +38,7 @@ const calcularMediaExamenes = (examenes) => {
 };
 
 const valorBarra = (media) => {
+  //cambia el valor de la barra de progreso
   barProgreso.setAttribute(`style`, `width: ${media}%`);
   barProgreso.setAttribute(`aria-valuenow`, `${media}`);
   barProgreso.innerHTML = `${media}%`;
@@ -48,6 +52,7 @@ const valorBarra = (media) => {
 };
 
 const obtenerDatos = async (examenesUsuario) => {
+  //obtiene los datos de los examenes
   try {
     const resPreguntas = await fetch(URLAPI + "api/pregunta/");
     const preguntas = await resPreguntas.json();
@@ -94,6 +99,7 @@ const obtenerDatos = async (examenesUsuario) => {
 };
 var index;
 const calcularMediaTemas = async (
+  //calcula la media de los temas
   arrayClasePreguntas,
   arrayClasePreguntasFalladas
 ) => {
@@ -129,6 +135,7 @@ const calcularMediaTemas = async (
 };
 
 function ordenarPorTemas(temas, preguntas) {
+  //ordena las preguntas por temas
   let totalPreTem = 0;
   let arrayTemas = [];
   temas.forEach((tema) => {
@@ -144,6 +151,7 @@ function ordenarPorTemas(temas, preguntas) {
 }
 
 const mostrarPorcentajeTema = (porcentajeFallosTema, temas) => {
+  //muestra el porcentaje de fallos por tema
   try {
     let botonTemas = document.getElementsByClassName("dropmenuTema")[0];
 
